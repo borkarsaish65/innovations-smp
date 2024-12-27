@@ -1,0 +1,18 @@
+[
+  {
+    "name": "Operation 1",
+    "script": "../samiksha-service/script/deleteData.js",
+    "env":"../samiksha-service/.env"
+  },
+    {
+      "name": "Operation 2",
+      "script": "../samiksha-service/script/createData.js",
+      "env":"../samiksha-service/.env"
+    },
+    {
+      "name": "Operation 3",
+      "script": "./scripts/script2s.js",
+      "env":"../samiksha-service/.env"
+    }
+  ]
+  
