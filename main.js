@@ -17,8 +17,11 @@ try {
 const executePythonScript = (operation) => {
   console.log(`Starting: ${operation.name}`);
   
-  // Spawn the Python process
-  const pythonProcess = spawn('python3', [operation.script]);
+  // Prepare arguments for the Python script
+  const scriptArgs = [operation.script, '--env', operation.env, '--programFile' , operation.programFile];
+  
+  // Spawn the Python process (use python3 if that's how you normally invoke it)
+  const pythonProcess = spawn('python3', scriptArgs);
 
   // Handle output
   pythonProcess.stdout.on('data', (data) => {
