@@ -1,13 +1,19 @@
 [
   {
     "name": "Operation 1",
-    "script": "../samiksha-service/script/deleteData.py",
-    "env":"../samiksha-service/.env"
+    "script": "./dropDb.py",
+    "env": "local"
   },
-    {
-      "name": "Operation 2",
-      "script": "../samiksha-service/script/createData.py",
-      "env":"../samiksha-service/.env"
-    }
-  ]
-  
+  {
+    "name": "Operation 2",
+    "script": "./projectService.py",
+    "env": "dev",
+    "programFile": "ProjectTemplate.xlsx"
+  },
+  {
+    "name": "Operation 3",
+    "script": "./samikshaService.py",
+    "env": "dev",
+    "programFile": "surveytemp.xlsx"
+  }
+]
