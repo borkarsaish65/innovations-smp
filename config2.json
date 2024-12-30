@@ -1,0 +1,13 @@
+[
+  {
+    "name": "Operation 1",
+    "script": "../samiksha-service/script/deleteData.py",
+    "env":"../samiksha-service/.env"
+  },
+    {
+      "name": "Operation 2",
+      "script": "../samiksha-service/script/createData.py",
+      "env":"../samiksha-service/.env"
+    }
+  ]
+  
