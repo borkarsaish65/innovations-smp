@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "dotenv": "^16.4.7",
-    "kafka-node": "^5.0.0"
+    "kafka-node": "^5.0.0",
+    "pg": "^8.13.1",
+    "xlsx": "^0.18.5"
   }
 }

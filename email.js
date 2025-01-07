@@ -1,6 +1,30 @@
 
 let kafkaClient = require('./kafka')()
 require('dotenv').config()
+const XLSX = require('xlsx');
+
+// Function to read Excel file
+async function readExcel(filePath) {
+  return new Promise((resolve, reject) => {
+    try {
+      // Read the Excel file
+      const workbook = XLSX.readFile(filePath);
+
+      // Get the first sheet name
+      const sheetName = workbook.SheetNames[0];
+
+      // Get the worksheet
+      const worksheet = workbook.Sheets[sheetName];
+
+      // Convert the sheet to JSON
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+      resolve(jsonData);
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
 
 // Dependencies
 const kafkaCommunicationsOnOff =
@@ -42,6 +66,8 @@ const pushEmailDataToKafka = function (message) {
           messages: JSON.stringify(message),
         },
       ]);
+
+      console.log(kafkaPushStatus, "this is the kafka push status");
 
       return resolve(kafkaPushStatus);
     } catch (error) {
@@ -107,13 +133,14 @@ const pushMessageToKafka = function (payload) {
             <tr>
               <th>User Name</th>
               <th>Email</th>
-              <th>Role</th>
+              <th>Password</th>
             </tr>
           </thead>
           <tbody>
             ${rows}
           </tbody>
         </table>
+        <p> SolutionName:Bihar Project, <a href="https://elevate-ml.shikshalokam.org/project-details?type=template&externalId=IDE-1733922993428&referenceFrom=library">Click here.</a>  </p>
         <p>Thank you!</p>
         <p>Best regards,<br>Automated Notification System</p>
       `;
@@ -131,12 +158,21 @@ const sendEmail = async (newUsers) => {
 
   // send email
   const sendMail=async()=>{
-      const requestBody = {
-        type: "email",
-        email: await sendEmail(cred)
+    console.log('Starting email script...')
+    const filePath = "UserService.xlsx"; // Path to your Excel file
+    const data = await readExcel(filePath); // Await the data
+    console.log(data, "this is the data");
+    const requestBody = {
+      type: "email",
+      email: await sendEmail(data),
     };
-     let  newData=await pushEmailDataToKafka(requestBody)
-     console.log(newData,"this is after pushing successfully");
-    }
+    let newData = await pushEmailDataToKafka(requestBody);
+    console.log(newData, "this is after pushing successfully");
+  }
 
-sendMail()
+
+// Start execution and exit when done
+(async () => {
+  await sendMail()
+  process.exit(0); // Gracefully exit the script
+})();
