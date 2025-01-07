@@ -11,9 +11,7 @@
     "programFile": "ProjectTemplate.xlsx"
   },
   {
-    "name": "Operation 3",
-    "script": "./samikshaService.py",
-    "env": "dev",
-    "programFile": "surveytemp.xlsx"
+    "name": "Operation 4",
+    "script": "./email.js"
   }
 ]

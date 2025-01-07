@@ -53,7 +53,15 @@ const executeJavascriptScript = (operation) => {
   console.log(`Starting JavaScript script: ${operation.name}`);
 
   // Prepare arguments for the JavaScript script
-  const scriptArgs = [operation.script, '--env', operation.env, '--programFile', operation.programFile];
+  const scriptArgs = [operation.script];
+
+  if(operation.env){
+    scriptArgs.push('--env', operation.env);
+  }
+
+  if(operation.programFile){
+    scriptArgs.push('--programFile', operation.programFile)
+  }
 
   // Spawn the Node.js process
   const nodeProcess = spawn('node', scriptArgs);
