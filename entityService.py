@@ -126,18 +126,15 @@ question_sequence_arr = []
 def generateAccessToken():
     # production search user api - start
     headerKeyClockUser = {'Content-Type': config.get(environment, 'content-type')}
-    # responseKeyClockUser = requests.post(url=config.get(environment, 'elevateuserhost') + config.get(environment, 'userlogin'), headers=headerKeyClockUser,
-                                        #  data=json.dumps(config.get(environment, 'keyclockAPIBody')))
-    # terminatingMessage(type(json.loads(config.get(environment, 'keyclockAPIBody'))))\
     loginBody = {
-        'email' : os.getenv('email'),
-        'password' : os.getenv('password')
+        'email' : os.getenv('ProjectServiceEmail'),
+        'password' : os.getenv('ProjectServicePassword')
     }
     responseKeyClockUser = requests.post(config.get(environment, 'elevateuserhost') + config.get(environment, 'userlogin'), headers=headerKeyClockUser, json=loginBody)
     
     messageArr = []
     messageArr.append("URL : " + str(config.get(environment, 'userlogin')))
-    messageArr.append("Body : " + str(os.getenv('keyclockapibody')))
+    messageArr.append("Body : " + str(os.getenv('ProjectServicekeyclockapibody')))
     messageArr.append("Status Code : " + str(responseKeyClockUser.status_code))
     if responseKeyClockUser.status_code == 200:
         responseKeyClockUser = responseKeyClockUser.json()
@@ -446,7 +443,7 @@ def envCheck():
         return False
 
 
-# Main function were all the function def are called------------------------------------------------------
+# Main function were all the function def are called
 def mainFunc(programFile, millisecond):
         convert_sheets_to_csv(programFile)
         accessToken = generateAccessToken()
@@ -483,58 +480,8 @@ if len(sheetNames) == len(pgmSheets) and sheetNames == pgmSheets:
     mainFunc(programFile, millisecond)
     end_time = time.time()
 
-
-    
-    for sheetEnv in sheetNames:
-        if sheetEnv.strip().lower() == 'program details':
-            print("Checking program details sheet...")
-            programDetailsSheet = wbPgm.sheet_by_name(sheetEnv)
-            keysEnv = [programDetailsSheet.cell(1, col_index_env).value for col_index_env in
-                       range(programDetailsSheet.ncols)]
-            for row_index_env in range(2, programDetailsSheet.nrows):
-                dictProgramDetails = {
-                    keysEnv[col_index_env]: programDetailsSheet.cell(row_index_env, col_index_env).value
-                    for col_index_env in range(programDetailsSheet.ncols)}
-                programName = dictProgramDetails['Title of the Program'].encode('utf-8').decode('utf-8')
-                isProgramnamePresent = False
-                if programName == "":
-                    isProgramnamePresent = False
-                else:
-                    isProgramnamePresent = True
-                scopeEntityType = scopeEntityType
-                userEntity = dictProgramDetails['Targeted entities at program level'].encode('utf-8').decode('utf-8').lstrip().rstrip().split(
-                    ",")
-        if sheetEnv.strip().lower() == 'resource details':
-            print("--->Checking Resource Details sheet...")
-            messageArr = []
-            messageArr.append("--->Checking Resource Details sheet...")
-            detailsEnvSheet = wbPgm.sheet_by_name(sheetEnv)
-            keysEnv = [detailsEnvSheet.cell(1, col_index_env).value for col_index_env in
-                       range(detailsEnvSheet.ncols)]
-            for row_index_env in range(2, detailsEnvSheet.nrows):
-                millisecond = int(time.time() * 1000)
-                dictDetailsEnv = {keysEnv[col_index_env]: detailsEnvSheet.cell(row_index_env, col_index_env).value
-                                  for
-                                  col_index_env in range(detailsEnvSheet.ncols)}
-                resourceNamePGM = dictDetailsEnv['Name of resources in program'].encode('utf-8').decode('utf-8') if dictDetailsEnv['Name of resources in program'] else terminatingMessage("\"Name of resources in program\" must not be Empty in \"Resource Details\" sheet")
-                resourceTypePGM = dictDetailsEnv['Type of resources'].encode('utf-8').decode('utf-8') if dictDetailsEnv['Type of resources'] else terminatingMessage("\"Type of resources\" must not be Empty in \"Resource Details\" sheet")
-                resourceLinkOrExtPGM = dictDetailsEnv['Resource Link'] if dictDetailsEnv['Resource Link'] else terminatingMessage("\"Resource Link\" must not be Empty in \"Resource Details\" sheet")
-                if str(dictDetailsEnv['Type of resources']).lower().strip() == "course":
-                    isCourse = False
-                else:
-                    isCourse = False
-                    resourceStatus = dictDetailsEnv['Resource Status'] if dictDetailsEnv['Resource Status'] else terminatingMessage("\"Resource Status\" must not be Empty in \"Resource Details\" sheet")
-                    if resourceStatus.strip()=="New Upload":
-                        print("--->Resource Name : "+str(resourceNamePGM))
-                        resourceLinkOrExtPGM = str(resourceLinkOrExtPGM).split('/')[5]
-                        file_url = 'https://docs.google.com/spreadsheets/d/' + resourceLinkOrExtPGM + '/export?format=xlsx'
-                        if not os.path.isdir('InputFiles'):
-                            os.mkdir('InputFiles')
-                        dest_file = 'InputFiles'
-                        addObservationSolution = wget.download(file_url, dest_file)
-                        print("--->solution input file successfully downloaded" + str(addObservationSolution))
 else:
-      print("-----> Entity Management Template Not Passed")
+      print("-----> Entity Management Template Not Valid")
 end_time = time.time()
 
 print("Execution time in sec : " + str(end_time - start_time))
