@@ -1,12 +1,13 @@
 // Import the PostgreSQL client
 const { Client } = require('pg');
+require('dotenv').config()
 
 // PostgreSQL connection configuration
 const config = {
-    user: 'postgres',      // Replace with your PostgreSQL username
-    host: 'localhost',          // Replace with your PostgreSQL host
-    database: 'user_service_elevate',  // Replace with your database name
-    password: 'postgres',  // Replace with your PostgreSQL password
+    user: process.env.POSTGRES_USER,      // Replace with your PostgreSQL username
+    host:process.env.POSTGRES_HOST,          // Replace with your PostgreSQL host
+    database: process.env.POSTGRES_DB,  // Replace with your database name
+    password: process.env.POSTGRES_PASSWORD,  // Replace with your PostgreSQL password
     port: 5432,                 // Replace with your PostgreSQL port (default: 5432)
 };
 
