@@ -2814,46 +2814,46 @@ def prepareProgramSuccessSheet(MainFilePath, solutionName_for_folder_path, progr
         messageArr.append("Response : " + str(responseFetchSolutionLinkApi.text))
         createAPILog(solutionName_for_folder_path, messageArr)
 
-        if os.path.exists(MainFilePath + "/" + str(programFile).replace(".xlsx", "") + '-SuccessSheet.xlsx'):
-            xfile = openpyxl.load_workbook(
-                MainFilePath + "/" + str(programFile).replace(".xlsx", "") + '-SuccessSheet.xlsx')
-        else:
-            xfile = openpyxl.load_workbook(programFile)
+        # if os.path.exists(MainFilePath + "/" + str(programFile).replace(".xlsx", "") + '-SuccessSheet.xlsx'):
+        #     xfile = openpyxl.load_workbook(
+        #         MainFilePath + "/" + str(programFile).replace(".xlsx", "") + '-SuccessSheet.xlsx')
+        # else:
+        #     xfile = openpyxl.load_workbook(programFile)
 
-        resourceDetailsSheet = xfile.get_sheet_by_name('Resource Details')
+        # resourceDetailsSheet = xfile.get_sheet_by_name('Resource Details')
 
-        greenFill = PatternFill(start_color='0000FF00',
-                                end_color='0000FF00',
-                                fill_type='solid')
-        rowCountRD = resourceDetailsSheet.max_row
-        columnCountRD = resourceDetailsSheet.max_column
-        for row in range(3, rowCountRD + 1):
-            if str(resourceDetailsSheet["B" + str(row)].value).rstrip().lstrip().lower() == "course":
-                resourceDetailsSheet["D1"] = ""
-                resourceDetailsSheet["E1"] = ""
-                resourceDetailsSheet['I2'] = "External id of the resource"
-                resourceDetailsSheet['J2'] = "link to access the resource/Response"
-                resourceDetailsSheet['I2'].fill = greenFill
-                resourceDetailsSheet['J2'].fill = greenFill
-                resourceDetailsSheet['I' + str(row)] = solutionExternalId
-                resourceDetailsSheet['J' + str(row)] = "The course has been successfully mapped to the program"
-                resourceDetailsSheet['I' + str(row)].fill = greenFill
-                resourceDetailsSheet['J' + str(row)].fill = greenFill
-            elif str(resourceDetailsSheet["A" + str(row)].value).strip() == solutionName:
-                resourceDetailsSheet["D1"] = ""
-                resourceDetailsSheet["E1"] = ""
-                resourceDetailsSheet['I2'] = "External id of the resource"
-                resourceDetailsSheet['J2'] = "link to access the resource/Response"
-                resourceDetailsSheet['I2'].fill = greenFill
-                resourceDetailsSheet['J2'].fill = greenFill
-                resourceDetailsSheet['I' + str(row)] = solutionExternalId
-                resourceDetailsSheet['J' + str(row)] = solutionLink
-                resourceDetailsSheet['I' + str(row)].fill = greenFill
-                resourceDetailsSheet['J' + str(row)].fill = greenFill
+        # greenFill = PatternFill(start_color='0000FF00',
+        #                         end_color='0000FF00',
+        #                         fill_type='solid')
+        # rowCountRD = resourceDetailsSheet.max_row
+        # columnCountRD = resourceDetailsSheet.max_column
+        # for row in range(3, rowCountRD + 1):
+        #     if str(resourceDetailsSheet["B" + str(row)].value).rstrip().lstrip().lower() == "course":
+        #         resourceDetailsSheet["D1"] = ""
+        #         resourceDetailsSheet["E1"] = ""
+        #         resourceDetailsSheet['I2'] = "External id of the resource"
+        #         resourceDetailsSheet['J2'] = "link to access the resource/Response"
+        #         resourceDetailsSheet['I2'].fill = greenFill
+        #         resourceDetailsSheet['J2'].fill = greenFill
+        #         resourceDetailsSheet['I' + str(row)] = solutionExternalId
+        #         resourceDetailsSheet['J' + str(row)] = "The course has been successfully mapped to the program"
+        #         resourceDetailsSheet['I' + str(row)].fill = greenFill
+        #         resourceDetailsSheet['J' + str(row)].fill = greenFill
+        #     elif str(resourceDetailsSheet["A" + str(row)].value).strip() == solutionName:
+        #         resourceDetailsSheet["D1"] = ""
+        #         resourceDetailsSheet["E1"] = ""
+        #         resourceDetailsSheet['I2'] = "External id of the resource"
+        #         resourceDetailsSheet['J2'] = "link to access the resource/Response"
+        #         resourceDetailsSheet['I2'].fill = greenFill
+        #         resourceDetailsSheet['J2'].fill = greenFill
+        #         resourceDetailsSheet['I' + str(row)] = solutionExternalId
+        #         resourceDetailsSheet['J' + str(row)] = solutionLink
+        #         resourceDetailsSheet['I' + str(row)].fill = greenFill
+        #         resourceDetailsSheet['J' + str(row)].fill = greenFill
 
-        programFile = str(programFile).replace(".xlsx", "")
-        xfile.save(MainFilePath + "/" + programFile + '-SuccessSheet.xlsx')
-        print("Program success sheet is created")
+        # programFile = str(programFile).replace(".xlsx", "")
+        # xfile.save(MainFilePath + "/" + programFile + '-SuccessSheet.xlsx')
+        # print("Program success sheet is created")
 
     else:
         print("Fetch solution link API Failed")
@@ -3484,7 +3484,6 @@ def projectUpload(projectFile, projectName_for_folder_path, accessToken):
         'projectTemplates': open(projectName_for_folder_path + '/projectUpload/projectUpload.csv', 'rb')
     }
     responseProjectUploadApi = requests.post(url=urlProjectUploadApi, headers=headerProjectUploadApi, data=project_payload, files=filesProject)
-    print(responseProjectUploadApi.text, "line no 3453")
     
     # Logging message
     messageArr = ["Program mapping is success.", "File path : " + projectName_for_folder_path + '/projectUpload/projectUpload.csv']
@@ -4682,7 +4681,6 @@ def mainFunc(MainFilePath, programFile, addObservationSolution, millisecond, isP
                                                                  accessToken)
                                 #     # sys.exit()
                                     titile = projectUpload(addObservationSolution, projectName_for_folder_path, accessToken)
-                                    print(titile,"line no 4624")
                                     taskUpload(addObservationSolution, projectName_for_folder_path, accessToken)
                                     ProjectSolutionResp = solutionCreationAndMapping(projectName_for_folder_path,
                                                                                      entityToUpload,
@@ -4699,7 +4697,7 @@ def mainFunc(MainFilePath, programFile, addObservationSolution, millisecond, isP
                                     downloadlogosign(filePathAddProject,projectName_for_folder_path)
                                     editsvg(accessToken,filePathAddProject,projectName_for_folder_path,baseTemplate_id)
                                     prepareProjectAndTasksSheets(addObservationSolution, projectName_for_folder_path,accessToken)
-                                    projectUpload(addObservationSolution, projectName_for_folder_path, accessToken)
+                                    titile = projectUpload(addObservationSolution, projectName_for_folder_path, accessToken)
                                     taskUpload(addObservationSolution, projectName_for_folder_path, accessToken)
                                     ProjectSolutionResp = solutionCreationAndMapping(projectName_for_folder_path,entityToUpload,listOfFoundRoles, accessToken)
                                     ProjectSolutionExternalId = ProjectSolutionResp[0]
@@ -4708,7 +4706,7 @@ def mainFunc(MainFilePath, programFile, addObservationSolution, millisecond, isP
 
                                     prepareProgramSuccessSheet(MainFilePath, projectName_for_folder_path, programFile,
                                                                ProjectSolutionExternalId,
-                                                               ProjectSolutionId, accessToken)
+                                                               ProjectSolutionId, accessToken,titile)
 
             except:
                 print("Terminated")
@@ -4746,7 +4744,6 @@ def mainFunc(MainFilePath, programFile, addObservationSolution, millisecond, isP
                                                                                            
                                                                                       
                                                                                                                    
-
 #main execution
 start_time = time.time()
 parser = argparse.ArgumentParser()
@@ -4754,6 +4751,8 @@ parser.add_argument('--programFile', '--projectFile', type=valid_file)
 parser.add_argument('--env', '--env')
 argument = parser.parse_args()
 programFile = argument.programFile
+filename = os.path.basename(programFile)
+
 environment = argument.env
 millisecond = int(time.time() * 1000)
 
@@ -4761,7 +4760,7 @@ if envCheck():
     print("=================== Environment set to " + str(environment) + "=====================")
 else:
     terminatingMessage(str(environment) + " is an invalid environment")
-MainFilePath = createFileStructForProgram(programFile)
+MainFilePath = createFileStructForProgram(filename)
 wbPgm = xlrd.open_workbook(programFile, on_demand=True)
 sheetNames = wbPgm.sheet_names()
 pgmSheets = ["Instructions", "Program Details", "Resource Details","Program Manager Details"]
