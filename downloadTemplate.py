@@ -7,7 +7,7 @@ import re
 load_dotenv()
 
 # Get the Google Drive folder URL from the .env file
-folder_url = os.getenv("GOOGLE_DRIVE_FOLDER_URL")
+folder_url = os.getenv("GOOGLE_DRIVE_FOLDER_URL_FOR_PROJECT")
 if not folder_url:
     raise ValueError("GOOGLE_DRIVE_FOLDER_URL is not set in the .env file.")
 
@@ -18,7 +18,7 @@ if not folder_id_match:
 folder_id = folder_id_match.group(1)
 
 # Specify the output directory for the folder
-output_dir = "Templates"
+output_dir = "programTemplates"
 os.makedirs(output_dir, exist_ok=True)
 
 # Use gdown to download the folder
