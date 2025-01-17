@@ -25,10 +25,13 @@
   },
   {
     "name": "Operation 5",
-    "script": "./projectService.py",
-    "env": "dev",
-    "programFile": "ProjectTemplate.xlsx",
-    "fileNameArgument": "--programFile"
+    "script": "./downloadTemplate.py",
+    "env": "local"
+  },
+  {
+    "name": "Operation 6",
+    "script": "./runProject.py",
+    "env": "local"
   },
   {
     "name": "Operation 6",
