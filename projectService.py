@@ -2740,9 +2740,11 @@ def create_csv_from_response(response_string, title):
     try:
         # Parse the JSON response string
         response_data = json.loads(response_string)
-        
+        formatted_role = rolesPGM.replace("_", " ").title()
         # Extract the relevant fields from the response
         project_name = title  # Title is passed as a parameter
+        project_role = formatted_role
+        project_entites =entitiesPGM
         project_link = response_data.get("result", "")  # Extract the 'result' field which contains the link
 
         # Define the output CSV file path
@@ -2757,10 +2759,10 @@ def create_csv_from_response(response_string, title):
 
             # Write headers if the file is new
             if not file_exists:
-                writer.writerow(["Project Name", "Project Link"])
+                writer.writerow(["Project Name", "Project Link","Project Role","Project Entites"])
 
             # Write the data row
-            writer.writerow([project_name, project_link])
+            writer.writerow([project_name, project_link,project_role,project_entites])
 
         print(f"Data written to {output_file} successfully.")
     except Exception as e:
