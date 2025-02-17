@@ -42,7 +42,7 @@
     "name": "Operation 2",
     "script": "./runSurvey.py",
     "env": "local"
-  }
+  },
   {
     "name": "Operation 6",
     "script": "./email.js"
