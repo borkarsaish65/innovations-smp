@@ -3,6 +3,9 @@ require('dotenv').config();
 const XLSX = require('xlsx');
 const fs = require('fs');
 const path = require('path');
+const axios = require('axios');
+const csv = require('csv-parser');
+const { Readable } = require('stream');
 
 // Function to read Excel file
 async function readExcel(filePath) {
@@ -197,12 +200,44 @@ const generateEmailContent = (newUsers, projectDetails) => {
 
 let mailOptions;
 
+
+async function fetchEmailSheetData() {
+  return new Promise(async (resolve,reject)=>{
+
+    const sheetUrl = process.env.GOOGLE_DRIVE_FOLDER_URL_FOR_EMAIL_SENDING;
+
+
+      try {
+          const response = await axios.get(sheetUrl);
+          const stream = Readable.from(response.data);
+      
+          const results = [];
+          stream.pipe(csv())
+            .on('data', (row) => results.push(row))
+            .on('end', () => {
+             // console.log(results,'<---');
+              resolve(results);
+            });
+        } catch (error) {
+          reject(error);
+        }
+
+  })
+}
+
 // Request body for the email
 const sendEmail = async (newUsers, projectDetails) => {
+
+  let results = await fetchEmailSheetData();
+
+  let emailAddressArr = results.map((res) => res.email);
+
+  let firstEmail = emailAddressArr.shift();
+
   let emailContent = await generateEmailContent(newUsers, projectDetails);
   return (mailOptions = {
-    to: process.env.EMAIL_TO_ADDRESS,
-    cc: process.env.EMAIL_TO_CC_ADDRESS,
+    to: firstEmail,
+    cc: emailAddressArr.join(','),
     subject: "Monthly Update: New User Credentials Inserted",
     body: emailContent,
   });
