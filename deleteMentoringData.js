@@ -4,7 +4,7 @@ require('dotenv').config()
 
 // PostgreSQL connection configuration
 const config = {
-    user: process.env.POSTGRES_USER,      // Replace with your PostgreSQL username
+    user: process.env.POSTGRES_MENTORING,      // Replace with your PostgreSQL username
     host:process.env.POSTGRES_HOST,          // Replace with your PostgreSQL host
     database: process.env.POSTGRES_DB,  // Replace with your database name
     password: process.env.POSTGRES_PASSWORD,  // Replace with your PostgreSQL password
@@ -12,6 +12,7 @@ const config = {
 };
 
 // Array of table names to delete data from
+
 const tablesToClear = process.env.TABLE_NAME_TO_DELETE
 
 async function clearTables() {
