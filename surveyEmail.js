@@ -135,6 +135,10 @@ const pushMessageToKafka = function (payload) {
 
 // Email content
 const generateEmailContent = (newUsers, projectDetails) => {
+    
+    
+  console.log(projectDetails,"line no ");
+  
   let userRows = newUsers
     .map(
       (user) =>
@@ -150,10 +154,11 @@ const generateEmailContent = (newUsers, projectDetails) => {
     .map(
       (project) =>
         `<tr style="text-align: center;">
-          <td style="padding: 10px;">${project["Project Name"]}</td>
-          <td style="padding: 10px;"><a href="${project["Project Link"]}" target="_blank" style="color: #007bff; text-decoration: none;">${project["Project Link"]}</a></td>
-          <td style="padding: 10px;">${project["Project Role"]}</td>
-          <td style="padding: 10px;">${project["Project Entites"]}</td>
+          <td style="padding: 10px;">${project["Survey Template Name"]}</td>
+          <td style="padding: 10px;">${project["Survey Name"]}</td>
+          <td style="padding: 10px;"><a href="${project["Project Link"]}" target="_blank" style="color: #007bff; text-decoration: none;">${project["Survey Link"]}</a></td>
+          <td style="padding: 10px;">${project["Survey Role"]}</td>
+          <td style="padding: 10px;">${project["Survey Entites"]}</td>
         </tr>`
     )
     .join("");
@@ -175,12 +180,13 @@ const generateEmailContent = (newUsers, projectDetails) => {
           ${userRows}
         </tbody>
       </table>
-      <h3 style="color: #333; margin-top: 20px;">Solution Details</h3>
+      <h3 style="color: #333; margin-top: 20px;">Survey Details</h3>
       <table border="1" style="border-collapse: collapse; width: 100%; border: 1px solid #ddd;">
         <thead style="background-color: #f4f4f4;">
           <tr>
-            <th style="padding: 10px;">Solution Name</th>
-            <th style="padding: 10px;">Solution Link</th>
+            <th style="padding: 10px;">Survey Template</th>
+            <th style="padding: 10px;">Survey Name</th>
+            <th style="padding: 10px;">Survey Link</th>
             <th style="padding: 10px;">Targted Roles</th>
             <th style="padding: 10px;">Targted Entities</th>
           </tr>
@@ -244,7 +250,7 @@ const sendEmail = async (newUsers, projectDetails) => {
 const sendMail = async () => {
   console.log("Starting email script...");
   const userFilePath = "UserService.xlsx"; // Path to your Excel file
-  const projectFilePath = "projectDetails.csv"; // Path to your CSV file
+  const projectFilePath = "surveyDetails.csv"; // Path to your CSV file
 
   const userData = await readExcel(userFilePath); // Await the data
   const projectData = await readCSV(projectFilePath); // Await the project data
