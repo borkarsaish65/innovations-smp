@@ -599,6 +599,7 @@ def programsFileCheck(filePathAddPgm, accessToken, parentFolder, MainFilePath):
                     dictDetailsEnv = {keysEnv[col_index_env]: detailsEnvSheet.cell(row_index_env, col_index_env).value
                                       for
                                       col_index_env in range(detailsEnvSheet.ncols)}
+                    global resourceNamePGM
                     resourceNamePGM = dictDetailsEnv['Name of resources in program'].encode('utf-8').decode('utf-8') if dictDetailsEnv['Name of resources in program'] else terminatingMessage("\"Name of resources in program\" must not be Empty in \"Resource Details\" sheet")
                     resourceTypePGM = dictDetailsEnv['Type of resources'].encode('utf-8').decode('utf-8') if dictDetailsEnv['Type of resources'] else terminatingMessage("\"Type of resources\" must not be Empty in \"Resource Details\" sheet")
                     resourceLinkOrExtPGM = dictDetailsEnv['Resource Link']
@@ -1031,7 +1032,6 @@ def terminatingMessage(msg):
 
 
 # def fetchEntityId(solutionName_for_folder_path, accessToken, entitiesNameList, scopeEntityType):
-#     print(entitiesNameList,scopeEntityType,"line no 934")
 #     urlFetchEntityListApi = config.get(environment, 'host')+config.get(environment, 'searchForLocation')
 #     headerFetchEntityListApi = {
 #         'Content-Type': config.get(environment, 'Content-Type'),
@@ -3280,8 +3280,42 @@ def fetchSolutionDetailsFromResourceSheet(solutionName_for_folder_path, programF
     return [solutionRolesArray, solutionStartDate, solutionEndDate]
 
 
+def PrepareCSVForEmail(SurveyLink,programFile):
+    try:
+        TemplateName = programFile.split("/")
+        # Parse the JSON response string
+        response_data = json.loads(SurveyLink)
+        formatted_role = rolesPGM.replace("_", " ").title()
+        # Extract the relevant fields from the response
+        project_name = resourceNamePGM  # Title is passed as a parameter
+        project_role = formatted_role
+        project_entites =entitiesPGM
+        project_file = TemplateName[-1]
+        project_link = response_data.get("result", "")  # Extract the 'result' field which contains the link
+
+        # Define the output CSV file path
+        output_file = "surveyDetails.csv"
+
+        # Check if the file exists
+        file_exists = os.path.isfile(output_file)
+
+        # Open the file in append mode and write the data
+        with open(output_file, mode="a", newline="") as csvfile:
+            writer = csv.writer(csvfile)
+
+            # Write headers if the file is new
+            if not file_exists:
+                writer.writerow(["Survey Template Name","Survey Name", "Survey Link","Survey Role","Survey Entites"])
+
+            # Write the data row
+            writer.writerow([project_file,project_name, project_link,project_role,project_entites])
+
+        print(f"Data written to {output_file} successfully.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+    
 def prepareProgramSuccessSheet(MainFilePath, solutionName_for_folder_path, programFile, solutionExternalId, solutionId,accessToken):
-    print(MainFilePath, solutionName_for_folder_path, programFile, solutionExternalId, solutionId,accessToken,'<***check***')
     urlFetchSolutionApi = config.get(environment, 'INTERNAL_KONG_IP') + config.get(environment, 'fetchSolutionDoc') + solutionId
     headerFetchSolutionApi = {
         'Authorization': config.get(environment, 'Authorization'),
@@ -3314,6 +3348,7 @@ def prepareProgramSuccessSheet(MainFilePath, solutionName_for_folder_path, progr
 
     responseFetchSolutionLinkApi = requests.get(url=urlFetchSolutionLinkApi, headers=headerFetchSolutionLinkApi,
                                                  data=payloadFetchSolutionLinkApi)
+    PrepareCSVForEmail(responseFetchSolutionLinkApi.text,programFile)
 
     messageArr = ["Solution Fetch Link.","solution id : " + solutionId,"solution ExternalId : " + solutionExternalId]
     messageArr.append("Upload status code : " + str(responseFetchSolutionLinkApi.status_code))
@@ -5338,9 +5373,7 @@ def mainFunc(MainFilePath, programFile, addObservationSolution, millisecond, isP
                 ECM_NAME = dictECMs['ECM Name/Domain Name'].encode('utf-8').decode('utf-8').strip()
                 section.update({dictECMs['section_id']: dictECMs['section_name']})
                 ecm_sections[EMC_ID] = dictECMs['section_id']
-                print(dictECMs['Is ECM Mandatory?'],"line no 53400000000000000000000")
                 if 'Is ECM Mandatory?' in dictECMs and dictECMs['Is ECM Mandatory?'] is not None:
-                    print(dictECMs['Is ECM Mandatory?'],"line n0 11111")
                     if dictECMs['Is ECM Mandatory?'] == "TRUE" or dictECMs['Is ECM Mandatory?'] == 1:
                         dictECMs['Is ECM Mandatory?'] = False
                     elif dictECMs['Is ECM Mandatory?'] == "FALSE" or dictECMs['Is ECM Mandatory?'] == 0:
