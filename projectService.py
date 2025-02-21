@@ -169,7 +169,7 @@ def programCreation(accessToken,parentFolder,externalId,pName,pDescription,roles
 )
     messageArr.append("Body : " + str(payload))
     headers = {'X-auth-token': accessToken,
-               'internal-access-token': os.getenv("ProjectServiceinternalAccessToken"),
+               'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment ),
                'Content-Type': 'application/json',
                'Authorization':config.get(environment, 'Authorization')}
     
@@ -293,7 +293,7 @@ def Programmappingapicall(MainFilePath,accessToken, program_file,parentFolder):
         'Authorization': config.get(environment, 'Authorization'),
         'X-auth-token': accessToken,
         'X-Channel-id': config.get(environment, 'X-Channel-id'),
-        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken")
+        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment )
     }
     payload = {}
     filesProject = {
@@ -547,13 +547,12 @@ def generateAccessToken(solutionName_for_folder_path):
     # production search user api - start
     headerKeyClockUser = {'Content-Type': config.get(environment, 'content-type')}
     loginBody = {
-        'email' : os.getenv('ProjectServiceEmail'),
-        'password' : os.getenv('ProjectServicePassword')
+        'email' : os.getenv('ProjectServiceEmail' + environment),
+        'password' : os.getenv('ProjectServicePassword' + environment)
     }
     responseKeyClockUser = requests.post(config.get(environment, 'elevateuserhost') + config.get(environment, 'userlogin'), headers=headerKeyClockUser, json=loginBody)
     messageArr = []
     messageArr.append("URL : " + str(config.get(environment, 'userlogin')))
-    messageArr.append("Body : " + str(os.getenv('ProjectServicekeyclockapibody')))
     messageArr.append("Status Code : " + str(responseKeyClockUser.status_code))
     if responseKeyClockUser.status_code == 200:
         responseKeyClockUser = responseKeyClockUser.json()
@@ -584,7 +583,7 @@ def getProgramInfo(accessTokenUser, solutionName_for_folder_path, programNameInp
     
     headersProgramSearch = {'Authorization': config.get(environment, 'Authorization'),
                             'Content-Type': 'application/json', 'X-auth-token': accessTokenUser,
-                            'internal-access-token': os.getenv("ProjectServiceinternalAccessToken")}
+                            'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment )}
     responseProgramSearch = requests.get(url=programUrl, headers=headersProgramSearch)
     messageArr = []
     messageArr.append("Program Search API")
@@ -697,7 +696,7 @@ def fetchUserDetails(environment, accessToken, projectServiceId):
     url = config.get(environment, 'elevateprojecthost') + config.get(environment, 'userInfoApiUrl')
     messageArr = ["User search API called."]
     headers = {'Content-Type': 'application/json',
-               'internal-access-token': os.getenv("ProjectServiceinternalAccessToken"),
+               'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment ),
                'X-auth-token': accessToken}
     responseUserSearch = requests.request("GET", url, headers=headers)
     rootOrgId = 1  # Replace this with the actual value you need
@@ -726,7 +725,7 @@ def fetchEntityId(solutionName_for_folder_path, accessToken, entitiesNameList, s
     urlFetchEntityListApi = config.get(environment, 'elevateentityhost')+config.get(environment, 'searchForLocation')
     headerFetchEntityListApi = {
         'Content-Type': config.get(environment, 'Content-Type'),
-        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken"),
+        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment ),
     }
     payload = {
 
@@ -787,7 +786,7 @@ def fetchEntityType(solutionName_for_folder_path, accessToken, entitiesPGM, scop
     urlFetchEntityListApi = config.get(environment, 'elevateentityhost') + config.get(environment, 'searchForLocation')
     headerFetchEntityListApi = {
         'Content-Type': config.get(environment, 'Content-Type'),
-        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken"),
+        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment ),
     }
 
     # Initialize a dictionary to store entity types for each entity
@@ -1763,7 +1762,7 @@ def solutionUpdate(solutionName_for_folder_path, accessToken, solutionId, bodySo
         'Authorization': config.get(environment, 'Authorization'),
         'X-auth-token': accessToken,
         'X-Channel-id': config.get(environment, 'X-Channel-id'),
-        "internal-access-token": os.getenv("ProjectServiceinternalAccessToken")
+        "internal-access-token": os.getenv("ProjectServiceinternalAccessToken" + environment )
         }
     responseUpdateSolutionApi = requests.post(url=solutionUpdateApi, headers=headerUpdateSolutionApi,data=json.dumps(bodySolutionUpdate))
     messageArr = ["Solution Update API called.", "URL : " + str(solutionUpdateApi), "Body : " + str(bodySolutionUpdate),"Response : " + str(responseUpdateSolutionApi.text),"Status Code : " + str(responseUpdateSolutionApi.status_code)]
@@ -2702,7 +2701,7 @@ def fetchSolutionDetailsFromProgramSheet(solutionName_for_folder_path, programFi
         'Authorization': config.get(environment, 'Authorization'),
         'X-auth-token': accessToken,
         'X-Channel-id': config.get(environment, 'X-Channel-id'),
-        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken")
+        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment )
     }
     payloadFetchSolutionApi = {}
     responseFetchSolutionApiUrl = requests.get(url=urlFetchSolutionApi, headers=headerFetchSolutionApi,
@@ -2736,11 +2735,12 @@ def fetchSolutionDetailsFromProgramSheet(solutionName_for_folder_path, programFi
     return [solutionRolesArray, solutionStartDate, solutionEndDate]
 
 
-def create_csv_from_response(response_string, title):
+def create_csv_from_response(response_string, title,filename):
     try:
         # Parse the JSON response string
         response_data = json.loads(response_string)
         formatted_role = rolesPGM.replace("_", " ").title()
+
         # Extract the relevant fields from the response
         project_name = title  # Title is passed as a parameter
         project_role = formatted_role
@@ -2759,10 +2759,10 @@ def create_csv_from_response(response_string, title):
 
             # Write headers if the file is new
             if not file_exists:
-                writer.writerow(["Project Name", "Project Link","Project Role","Project Entites"])
+                writer.writerow(["Template Name","Project Name", "Project Link","Project Role","Project Entites"])
 
             # Write the data row
-            writer.writerow([project_name, project_link,project_role,project_entites])
+            writer.writerow([filename,project_name, project_link,project_role,project_entites])
 
         print(f"Data written to {output_file} successfully.")
     except Exception as e:
@@ -2777,7 +2777,7 @@ def prepareProgramSuccessSheet(MainFilePath, solutionName_for_folder_path, progr
         'Authorization': config.get(environment, 'Authorization'),
         'X-auth-token': accessToken,
         'X-Channel-id': config.get(environment, 'X-Channel-id'),
-        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken")
+        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment )
     }
     payloadFetchSolutionApi = {}
 
@@ -2798,7 +2798,7 @@ def prepareProgramSuccessSheet(MainFilePath, solutionName_for_folder_path, progr
         'Authorization': config.get(environment, 'Authorization'),
         'X-auth-token': accessToken,
         'X-Channel-id': config.get(environment, 'X-Channel-id'),
-        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken")
+        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment )
     }
     payloadFetchSolutionLinkApi = {}
 
@@ -2810,7 +2810,7 @@ def prepareProgramSuccessSheet(MainFilePath, solutionName_for_folder_path, progr
 
     if responseFetchSolutionLinkApi.status_code == 200:
         print('Fetch solution Link Api Success')
-        create_csv_from_response(responseFetchSolutionLinkApi.text,titile)
+        create_csv_from_response(responseFetchSolutionLinkApi.text,titile,filename)
         responseProjectUploadJson = responseFetchSolutionLinkApi.json()
         solutionLink = responseProjectUploadJson["result"]
         messageArr.append("Response : " + str(responseFetchSolutionLinkApi.text))
@@ -2884,7 +2884,7 @@ def prepareProgramSuccessSheetcsv(MainFilePath, solutionName_for_folder_path, pr
         'Authorization': config.get(environment, 'Authorization'),
         'X-auth-token': accessToken,
         'X-Channel-id': config.get(environment, 'X-Channel-id'),
-        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken")
+        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment )
     }
     payloadFetchSolutionApi = {}
 
@@ -2905,7 +2905,7 @@ def prepareProgramSuccessSheetcsv(MainFilePath, solutionName_for_folder_path, pr
         'Authorization': config.get(environment, 'Authorization'),
         'X-auth-token': accessToken,
         'X-Channel-id': config.get(environment, 'X-Channel-id'),
-        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken")
+        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment )
     }
     payloadFetchSolutionLinkApi = {}
 
@@ -3194,7 +3194,7 @@ def checkEntityOfSolution(projectName_for_folder_path, solutionNameOrId, accessT
     searchSolutionpayload = {}
     searchSolutionheaders = {
         'X-auth-token': accessToken,
-        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken"),
+        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment ),
         'Authorization': config.get(environment, 'Authorization')
     }
 
@@ -3217,7 +3217,7 @@ def checkEntityOfSolution(projectName_for_folder_path, solutionNameOrId, accessT
             solutionDetailspayload = {}
             solutionDetailsheaders = {
                 'X-auth-token': accessToken,
-                'internal-access-token': os.getenv("ProjectServiceinternalAccessToken"),
+                'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment ),
                 'Authorization': config.get(environment, 'Authorization')
             }
 
@@ -3479,7 +3479,7 @@ def projectUpload(projectFile, projectName_for_folder_path, accessToken):
         'Authorization': config.get(environment, 'Authorization'),
         'X-auth-token': accessToken,
         'X-Channel-id': config.get(environment, 'X-Channel-id'),
-        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken")
+        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment )
     }
     project_payload = {}
     filesProject = {
@@ -3541,7 +3541,7 @@ def taskUpload(projectFile, projectName_for_folder_path, accessToken):
                 'Authorization': config.get(environment, 'Authorization'),
                 'X-auth-token': accessToken,
                 'X-Channel-id': config.get(environment, 'X-Channel-id'),
-                'internal-access-token': os.getenv("ProjectServiceinternalAccessToken")
+                'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment )
             }
             fetchProjectIdPayload = {}
 
@@ -3570,7 +3570,7 @@ def taskUpload(projectFile, projectName_for_folder_path, accessToken):
             'Authorization': config.get(environment, 'Authorization'),
             'X-auth-token': accessToken,
             'X-Channel-id': config.get(environment, 'X-Channel-id'),
-            'internal-access-token': os.getenv("ProjectServiceinternalAccessToken")
+            'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment )
         }
         task_payload = {}
         filesTasks = {
@@ -3620,7 +3620,7 @@ def fetchCertificateBaseTemplate(filePathAddProject,accessToken,projectName_for_
         'Authorization': config.get(environment, 'Authorization'),
         'X-auth-token': accessToken,
         'X-Channel-id': config.get(environment, 'X-Channel-id'),
-        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken"),
+        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment ),
         'Content-Type': 'application/json'
     }
     payload = json.dumps({
@@ -3674,7 +3674,7 @@ def prepareaddingcertificatetemp(filePathAddProject, projectName_for_folder_path
         'Authorization': config.get(environment, 'Authorization'),
         'X-auth-token': accessToken,
         'X-Channel-id': config.get(environment, 'X-Channel-id'),
-        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken"),
+        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment ),
         'Content-Type': 'application/json'
     }
     payload = json.dumps({
@@ -3777,7 +3777,7 @@ def prepareaddingcertificatetemp(filePathAddProject, projectName_for_folder_path
         'Authorization': config.get(environment, 'Authorization'),
         'X-auth-token': accessToken,
         'X-Channel-id': config.get(environment, 'X-Channel-id'),
-        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken"),
+        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment ),
         'Content-Type': 'application/json'
     }
 
@@ -3956,7 +3956,7 @@ def prepareaddingcertificatetemp(filePathAddProject, projectName_for_folder_path
         'Authorization': config.get(environment, 'Authorization'),
         'X-auth-token': accessToken,
         'X-Channel-id': config.get(environment, 'X-Channel-id'),
-        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken")
+        'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment )
     }
     task_payload = {}
     task_file = []
@@ -3977,7 +3977,7 @@ def prepareaddingcertificatetemp(filePathAddProject, projectName_for_folder_path
             'Authorization': config.get(environment, 'Authorization'),
             'X-auth-token': accessToken,
             'X-Channel-id': config.get(environment, 'X-Channel-id'),
-            'internal-access-token': os.getenv("ProjectServiceinternalAccessToken"),
+            'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment ),
             'Content-Type': 'application/json'
         }
 
@@ -4001,7 +4001,7 @@ def prepareaddingcertificatetemp(filePathAddProject, projectName_for_folder_path
             'Authorization': config.get(environment, 'Authorization'),
             'X-auth-token': accessToken,
             'X-Channel-id': config.get(environment, 'X-Channel-id'),
-            'internal-access-token': os.getenv("ProjectServiceinternalAccessToken"),
+            'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment ),
             'Content-Type': 'application/json'
         }
 
@@ -4114,7 +4114,7 @@ def editsvg(accessToken,filePathAddProject,projectName_for_folder_path,baseTempl
                     'Authorization': config.get(environment, 'Authorization'),
                     'X-auth-token': accessToken,
                     'X-Channel-id': config.get(environment, 'X-Channel-id'),
-                    'internal-access-token': os.getenv("ProjectServiceinternalAccessToken")
+                    'internal-access-token': os.getenv("ProjectServiceinternalAccessToken" + environment )
 
                 }
                 responseeditsvg = requests.request("POST",url=urleditnigsvgApi, headers=headereditingsvgApi,data=payload, files=downloadedfiles)
@@ -4640,7 +4640,7 @@ def mainFunc(MainFilePath, programFile, addObservationSolution, millisecond, isP
                 def addProjectFunc(filePathAddProject, projectName_for_folder_path, millisAddObs,validateSheets):
                     print('Add Project Function Called')
                     try:
-                        os.getenv("ProjectServiceinternalAccessToken")
+                        os.getenv("ProjectServiceinternalAccessToken" + environment )
                     except:
                         print("Invalid Environment...")
                         sys.exit()
@@ -4744,7 +4744,7 @@ def mainFunc(MainFilePath, programFile, addObservationSolution, millisecond, isP
                         projectUpload(addObservationSolution, parentFolder, accessToken)
                         taskUpload(addObservationSolution, parentFolder, accessToken)                                                                     
                                                                                            
-                                                                                      
+                                                                           
                                                                                                                    
 #main execution
 start_time = time.time()
@@ -4753,7 +4753,10 @@ parser.add_argument('--programFile', '--projectFile', type=valid_file)
 parser.add_argument('--env', '--env')
 argument = parser.parse_args()
 programFile = argument.programFile
+global filename
 filename = os.path.basename(programFile)
+
+
 
 environment = argument.env
 millisecond = int(time.time() * 1000)

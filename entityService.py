@@ -127,14 +127,13 @@ def generateAccessToken():
     # production search user api - start
     headerKeyClockUser = {'Content-Type': config.get(environment, 'content-type')}
     loginBody = {
-        'email' : os.getenv('ProjectServiceEmail'),
-        'password' : os.getenv('ProjectServicePassword')
+        'email' : os.getenv('EntityManagamentEmail' + environment),
+        'password' : os.getenv('ProjectServicePassword' + environment)
     }
     responseKeyClockUser = requests.post(config.get(environment, 'elevateuserhost') + config.get(environment, 'userlogin'), headers=headerKeyClockUser, json=loginBody)
     
     messageArr = []
     messageArr.append("URL : " + str(config.get(environment, 'userlogin')))
-    messageArr.append("Body : " + str(os.getenv('ProjectServicekeyclockapibody')))
     messageArr.append("Status Code : " + str(responseKeyClockUser.status_code))
     if responseKeyClockUser.status_code == 200:
         responseKeyClockUser = responseKeyClockUser.json()
@@ -186,7 +185,7 @@ def EntityTypeCreate(accessToken):
           
         headerEntityTypeBulkCreateApi = {
             'X-auth-token': accessToken,
-            'internal-access-token': os.getenv("internalAccessToken"),
+            'internal-access-token': os.getenv("EntityManagamentinternalAccessToken" + environment),
             # 'content-type':'multipart/form-data'
         }
         csv_file_path = './EntityManagementCSV/EntityType.csv'
@@ -209,7 +208,7 @@ def EntityTypeCreate(accessToken):
 def EntitiesCreate(accessToken):
     headerEntitiesCreateApi = {
         'X-auth-token': accessToken,
-        'internal-access-token': os.getenv("internalAccessToken"),
+        'internal-access-token': os.getenv("EntityManagamentinternalAccessToken" + environment),
     }
 
     # List of entity types
@@ -259,7 +258,7 @@ def EntitiesCreate(accessToken):
 def GeneratMappingCSV(accessToken):
     headerGeneratMappingCSVAPI = {
         'X-auth-token': accessToken,
-        'internal-access-token': os.getenv("internalAccessToken"),
+        'internal-access-token': os.getenv("EntityManagamentinternalAccessToken" + environment),
     }
 
     csv_file_path = './EntityManagementCSV/entityCSV.csv'
@@ -310,7 +309,7 @@ def GeneratMappingCSV(accessToken):
 def MappingEntities(accessToken):
         headerMappingEntitiesApi = {
             'X-auth-token': accessToken,
-            'internal-access-token': os.getenv("internalAccessToken"),
+            'internal-access-token': os.getenv("EntityManagamentinternalAccessToken" + environment),
         }
         csv_file_path = './EntityManagementCSV/mapping.csv'
         file_entity_type = open(csv_file_path, 'rb')
@@ -332,7 +331,7 @@ def MappingEntities(accessToken):
 def createUserData(accessToken):
     header_create_user = {
         'X-auth-token': accessToken,
-        'internal-access-token': os.getenv("internalAccessToken"),
+        'internal-access-token': os.getenv("EntityManagamentinternalAccessToken" + environment),
         'content-type': 'application/json'
     }
 
@@ -383,7 +382,7 @@ def createUserData(accessToken):
 
 def EntityTypeFind(entity_type):
     header_entity_type = {
-        'internal-access-token': os.getenv("internalAccessToken"),
+        'internal-access-token': os.getenv("EntityManagamentinternalAccessToken" + environment),
         'content-type': 'application/json'
     }
 
