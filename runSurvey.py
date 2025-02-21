@@ -13,7 +13,7 @@ else:
     for project_file in survey_files:
         command = [
             "python3",
-            "samiksha2.py",
+            "samikshaService.py",
             "--env", "dev",
             "--programFile", os.path.join(project_template_dir, project_file)
         ]
