@@ -3,9 +3,6 @@ require('dotenv').config();
 const XLSX = require('xlsx');
 const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
-const csv = require('csv-parser');
-const { Readable } = require('stream');
 
 // Function to read Excel file
 async function readExcel(filePath) {
@@ -33,16 +30,19 @@ async function readExcel(filePath) {
 // Function to read CSV file
 async function readCSV(filePath) {
   return new Promise((resolve, reject) => {
-
     try {
-        const CSvData = []
-        const data = fs.createReadStream(filePath)
-        .pipe(csv({ delimiter: ",", from_line: 2 }))
-        .on("data", function (row) {
-            CSvData.push(row)
-          return row
-        })
-      resolve(CSvData);
+      const csvData = fs.readFileSync(filePath, 'utf8');
+      const lines = csvData.split('\n').filter(line => line.trim() !== '');
+      const headers = lines[0].split(',');
+      const data = lines.slice(1).map(line => {
+        const values = line.split(',');
+        const obj = {};
+        headers.forEach((header, index) => {
+          obj[header.trim()] = values[index].trim();
+        });
+        return obj;
+      });
+      resolve(data);
     } catch (err) {
       reject(err);
     }
@@ -134,57 +134,25 @@ const pushMessageToKafka = function (payload) {
 };
 
 // Email content
-const generateEmailContent = (newUsers, projectDetails) => {
-  let userRows = newUsers
-    .map(
-      (user) =>
-        `<tr style="text-align: center;">
-          <td style="padding: 10px;">${user.name}</td>
-          <td style="padding: 10px;">${user.email}</td>
-          <td style="padding: 10px;">${user.password}</td>
-        </tr>`
-    )
-    .join("");
+const generateEmailContent = ( projectDetails) => {
 
   let projectRows = projectDetails
     .map(
       (project) =>
         `<tr style="text-align: center;">
           <td style="padding: 10px;">${project["Template Name"]}</td>
-          <td style="padding: 10px;">${project["Project Name"]}</td>
-          <td style="padding: 10px;"><a href="${project["Project Link"]}" target="_blank" style="color: #007bff; text-decoration: none;">${project["Project Link"]}</a></td>
-          <td style="padding: 10px;">${project["Project Role"]}</td>
-          <td style="padding: 10px;">${project["Project Entites"]}</td>
+          <td style="padding: 10px;">${project["Status"]}</td>
         </tr>`
     )
     .join("");
 
   return `
-    <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-      <p>Dear Team,</p>
-      <p>This is an automated notification to inform you that the scheduled cron job has been successfully executed for this month, and new user credentials have been added to the system.</p>
-      <h3 style="color: #333;">User Details</h3>
-      <table border="1" style="border-collapse: collapse; width: 100%; border: 1px solid #ddd;">
-        <thead style="background-color: #f4f4f4;">
-          <tr>
-            <th style="padding: 10px;">User Name</th>
-            <th style="padding: 10px;">Email</th>
-            <th style="padding: 10px;">Password</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${userRows}
-        </tbody>
-      </table>
-      <h3 style="color: #333; margin-top: 20px;">Project Details</h3>
+      <h3 style="color: #333; margin-top: 20px;">Mentoring Details</h3>
       <table border="1" style="border-collapse: collapse; width: 100%; border: 1px solid #ddd;">
         <thead style="background-color: #f4f4f4;">
           <tr>
             <th style="padding: 10px;">Template Name</th>
-            <th style="padding: 10px;">Project Name</th>
-            <th style="padding: 10px;">Project Link</th>
-            <th style="padding: 10px;">Targted Roles</th>
-            <th style="padding: 10px;">Targted Entities</th>
+            <th style="padding: 10px;">Template Status</th>
           </tr>
         </thead>
         <tbody>
@@ -199,44 +167,12 @@ const generateEmailContent = (newUsers, projectDetails) => {
 
 let mailOptions;
 
-
-async function fetchEmailSheetData() {
-  return new Promise(async (resolve,reject)=>{
-
-    const sheetUrl = process.env.GOOGLE_DRIVE_FOLDER_URL_FOR_EMAIL_SENDING;
-
-
-      try {
-          const response = await axios.get(sheetUrl);
-          const stream = Readable.from(response.data);
-      
-          const results = [];
-          stream.pipe(csv())
-            .on('data', (row) => results.push(row))
-            .on('end', () => {
-             // console.log(results,'<---');
-              resolve(results);
-            });
-        } catch (error) {
-          reject(error);
-        }
-
-  })
-}
-
 // Request body for the email
 const sendEmail = async (newUsers, projectDetails) => {
-
-  let results = await fetchEmailSheetData();
-
-  let emailAddressArr = results.map((res) => res.email);
-
-  let firstEmail = emailAddressArr.shift();
-
   let emailContent = await generateEmailContent(newUsers, projectDetails);
   return (mailOptions = {
-    to: firstEmail,
-    cc: emailAddressArr.join(','),
+    to: process.env.EMAIL_TO_ADDRESS,
+    cc: process.env.EMAIL_TO_CC_ADDRESS,
     subject: "Monthly Update: New User Credentials Inserted",
     body: emailContent,
   });
@@ -245,18 +181,15 @@ const sendEmail = async (newUsers, projectDetails) => {
 // Send email
 const sendMail = async () => {
   console.log("Starting email script...");
-  const userFilePath = "UserService.xlsx"; // Path to your Excel file
-  const projectFilePath = "projectDetails.csv"; // Path to your CSV file
+  const projectFilePath = "MentoringDetails.csv"; // Path to your CSV file
 
-  const userData = await readExcel(userFilePath); // Await the data
   const projectData = await readCSV(projectFilePath); // Await the project data
 
-  console.log(userData, "this is the user data");
   console.log(projectData, "this is the project data");
 
   const requestBody = {
     type: "email",
-    email: await sendEmail(userData, projectData),
+    email: await sendEmail(projectData),
   };
 
   let newData = await pushEmailDataToKafka(requestBody);
