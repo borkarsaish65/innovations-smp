@@ -1,18 +1,84 @@
 [
   {
     "name": "Operation 1",
-    "script": "../samiksha-service/script/deleteData.js",
-    "env":"../samiksha-service/.env"
+    "script": "./deleteUserService.js",
+    "env": "local"
   },
-    {
-      "name": "Operation 2",
-      "script": "../samiksha-service/script/createData.js",
-      "env":"../samiksha-service/.env"
-    },
-    {
-      "name": "Operation 3",
-      "script": "./scripts/script2s.js",
-      "env":"../samiksha-service/.env"
-    }
-  ]
-  
+  {
+    "name": "Operation 2",
+    "script": "./downloadUserTemplate.js",
+    "env": "local"
+  },
+  {
+   "name": "Operation 3",
+    "script": "./runUser.py",
+    "env": "local"
+  },
+  {
+    "name": "Operation 4",
+    "script": "./DropEntityProjectCollection.py",
+    "env": "local"
+  },
+  {
+    "name": "Operation 5",
+    "script": "./downloadEntityTemplate.py",
+    "env": "local"
+  },
+  {
+    "name": "Operation 6",
+    "script": "./runEntity.py",
+    "env": "local"
+  },
+  {
+    "name": "Operation 7",
+    "script": "./downloadProjectTemplate.py",
+    "env": "local"
+  },
+  {
+    "name": "Operation 8",
+    "script": "./runProject.py",
+    "env": "local"
+  },
+  {
+    "name": "Operation 9",
+    "script": "./ProjectServiceemail.js"
+  },
+  {
+    "name": "Operation 10",
+    "script": "./DropSurveyCollection.py",
+    "env": "local"
+  },
+  {
+    "name": "Operation 11",
+    "script": "./downloadSurveyTemplate.py",
+    "env": "local"
+  },
+  {
+    "name": "Operation 12",
+    "script": "./runSurvey.py",
+    "env": "local"
+  },
+  {
+    "name": "Operation 13",
+    "script": "./surveyEmail.js"
+  },
+  {
+    "name": "Operation 14",
+    "script": "./deleteMentoringData.js",
+    "env": "local"
+  },
+  {
+    "name": "Operation 15",
+    "script": "./downloadTemplateForMentoring.py",
+    "env": "local"
+  },
+  {
+    "name": "Operation 16",
+    "script": "./runMentoring.py",
+    "env": "local"
+  },
+  {
+    "name": "Operation 17",
+    "script": "./MentoringEmail.js"
+  }
+]
