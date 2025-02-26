@@ -1,13 +1,16 @@
 const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-
+require('dotenv').config()
+const environmentVariable = process.env.ENVIRONMENT_VARIABLE || 'local';
 // Load the configuration file
 const configPath = path.resolve(__dirname, 'config2.json');
 let config;
 
 try {
-  config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  config = fs.readFileSync(configPath, 'utf8');
+  config = config.replaceAll('{{dynamicEnv}}',environmentVariable)
+  config = JSON.parse(config);
 } catch (err) {
   console.error(`Error reading config file: ${err.message}`);
   process.exit(1);
@@ -46,7 +49,7 @@ const executePythonScript = (operation) => {
 
     // Handle process exit
     pythonProcess.on('close', (code) => {
-      console.log(`[${operation.name}] Script exited with code ${code}`);
+      console.log(`[${operation.name}] python Script exited with code ${code}`);
       if (code === 0) {
         resolve();
       } else {
@@ -87,7 +90,7 @@ const executeJavascriptScript = (operation) => {
 
     // Handle process exit
     nodeProcess.on('close', (code) => {
-      console.log(`[${operation.name}] Script exited with code ${code}`);
+      console.log(`[${operation.name}] node Script exited with code ${code}`);
       if (code === 0) {
         resolve();
       } else {
@@ -112,7 +115,7 @@ const executeOperationsSequentially = async (operations) => {
         }
       } catch (error) {
         console.error(error.message);
-        break; // Stop execution on failure
+     //   break; // Stop execution on failure
       }
     } else {
       console.error(`Script not found for operation: ${operation.name}`);

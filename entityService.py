@@ -40,6 +40,8 @@ from openpyxl.styles import colors
 from openpyxl.cell import Cell
 import gdown
 from mimetypes import guess_extension
+from json_utils import update_success_json
+json_file = "success.json"
 
 load_dotenv()
 
@@ -451,7 +453,7 @@ def mainFunc(programFile, millisecond):
         GeneratMappingCSV(accessToken)
         MappingEntities(accessToken)
         createUserData(accessToken)
-                   
+        update_success_json(json_file, "entityService", "success")
                                                                                                                    
 
 #main execution

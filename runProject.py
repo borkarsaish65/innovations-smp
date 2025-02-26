@@ -1,5 +1,13 @@
 import os
 import subprocess
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--env", choices=["local", "dev", "prod"], help="Specify the environment")
+args = parser.parse_args()
+env = args.env
+print(f"Running in {args.env} environment")
+
 
 # Directory containing the ProjectTemplate files
 project_template_dir = './programTemplates'  # Update this path if the files are in a different directory
@@ -14,7 +22,7 @@ else:
         command = [
             "python3",
             "projectService.py",
-            "--env", "dev",
+            "--env", env,
             "--projectFile", os.path.join(project_template_dir, project_file)
         ]
         print(f"Running command: {' '.join(command)}")

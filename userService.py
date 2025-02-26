@@ -40,6 +40,11 @@ from openpyxl.styles import colors
 from openpyxl.cell import Cell
 import gdown
 from mimetypes import guess_extension
+from json_utils import update_success_json
+from json_utils import proceed_only_on_success
+json_file = "success.json"
+
+update_success_json(json_file, "userService", "false")
 
 load_dotenv()
 
@@ -386,7 +391,8 @@ def mainFunc(programFile):
         accessToken = generateAccessToken()
         EntityTypeCreate(accessToken)
         EntitiesCreate(accessToken)
-      
+        update_success_json(json_file, "userService", "success")
+        print("User Service Execution Completed")
                    
                                                                                                                    
 
@@ -411,6 +417,9 @@ pgmSheets = ["UserData","entityType", "entity", "AdminUser"]
 if len(sheetNames) == len(pgmSheets) and sheetNames == pgmSheets:
     print("--->User Template detected.<---")
     millisecond = int(time.time() * 1000)
+    result = proceed_only_on_success(json_file, "deleteUserService")
+    if result != True:
+       terminatingMessage("Deletion of user failed hence not proceeding with userService.py script....")
     mainFunc(programFile)
     end_time = time.time()
 

@@ -2,49 +2,49 @@
   {
     "name": "Operation 1",
     "script": "./deleteUserService.js",
-    "env": "local"
+    "env": "{{dynamicEnv}}"
   },
   {
     "name": "Operation 2",
     "script": "./userService.py",
-    "env": "local",
+    "env": "{{dynamicEnv}}",
     "programFile": "UserService.xlsx",
     "fileNameArgument": "--UserFile"
   },
   {
     "name": "Operation 3",
     "script": "./dropDb.py",
-    "env": "local"
+    "env": "{{dynamicEnv}}"
   },
   {
     "name": "Operation 4",
     "script": "./entityService.py",
-    "env": "local",
+    "env": "{{dynamicEnv}}",
     "programFile": "EntityManagament.xlsx",
     "fileNameArgument": "--EntityFile"
   },
   {
     "name": "Operation 5",
     "script": "./downloadTemplate.py",
-    "env": "local"
+    "env": "{{dynamicEnv}}"
   },
   {
     "name": "Operation 6",
     "script": "./runProject.py",
-    "env": "local"
+    "env": "{{dynamicEnv}}"
   },
   {
-    "name": "Operation 1",
+    "name": "Operation 7",
     "script": "./downloadSurveyTemplate.py",
-    "env": "local"
+    "env": "{{dynamicEnv}}"
   },
   {
-    "name": "Operation 2",
+    "name": "Operation 8",
     "script": "./runSurvey.py",
-    "env": "local"
+    "env": "{{dynamicEnv}}"
   },
   {
-    "name": "Operation 6",
+    "name": "Operation 9",
     "script": "./email.js"
   }
 ]
