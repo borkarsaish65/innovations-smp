@@ -1,4 +1,8 @@
-[
+[  {
+  "name": "Operation 1",
+  "script": "./prepareToRunScript.js",
+  "env": "{{dynamicEnv}}"
+  },
   {
     "name": "Operation 1",
     "script": "./deleteUserService.js",
@@ -6,45 +10,73 @@
   },
   {
     "name": "Operation 2",
-    "script": "./userService.py",
-    "env": "{{dynamicEnv}}",
-    "programFile": "UserService.xlsx",
-    "fileNameArgument": "--UserFile"
+    "script": "./downloadUserTemplate.js",
+    "env": "{{dynamicEnv}}"
   },
   {
     "name": "Operation 3",
-    "script": "./dropDb.py",
-    "env": "{{dynamicEnv}}"
+     "script": "./runUser.py",
+     "env": "{{dynamicEnv}}"
   },
   {
     "name": "Operation 4",
-    "script": "./entityService.py",
-    "env": "{{dynamicEnv}}",
-    "programFile": "EntityManagament.xlsx",
-    "fileNameArgument": "--EntityFile"
-  },
-  {
-    "name": "Operation 5",
-    "script": "./downloadTemplate.py",
-    "env": "{{dynamicEnv}}"
-  },
-  {
-    "name": "Operation 6",
-    "script": "./runProject.py",
+    "script": "./DropEntityProjectCollection.py",
     "env": "{{dynamicEnv}}"
   },
   {
     "name": "Operation 7",
-    "script": "./downloadSurveyTemplate.py",
+    "script": "./downloadProjectTemplate.py",
     "env": "{{dynamicEnv}}"
   },
   {
     "name": "Operation 8",
-    "script": "./runSurvey.py",
+    "script": "./runProject.py",
     "env": "{{dynamicEnv}}"
   },
   {
     "name": "Operation 9",
-    "script": "./email.js"
+    "script": "./ProjectServiceemail.js"
+  },
+  {
+    "name": "Operation 10",
+    "script": "./DropSurveyCollection.py",
+    "env": "{{dynamicEnv}}"
+  },
+  {
+    "name": "Operation 11",
+    "script": "./downloadSurveyTemplate.py",
+    "env": "{{dynamicEnv}}"
+  },
+  {
+    "name": "Operation 12",
+    "script": "./runSurvey.py",
+    "env": "{{dynamicEnv}}"
+  },
+  {
+    "name": "Operation 13",
+    "script": "./surveyEmail.js"
+  },
+  {
+    "name": "Operation 14",
+    "script": "./deleteMentoringData.js",
+    "env": "{{dynamicEnv}}"
+  },
+  {
+    "name": "Operation 15",
+    "script": "./downloadTemplateForMentoring.py",
+    "env": "{{dynamicEnv}}"
+  },
+  {
+    "name": "Operation 16",
+    "script": "./runMentoring.py",
+    "env": "{{dynamicEnv}}"
+  },
+  {
+    "name": "Operation 17",
+    "script": "./MentoringEmail.js"
+  },
+  {
+    "name": "Operation 18",
+    "script": "./summaryEmail.js"
   }
 ]

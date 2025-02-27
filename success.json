@@ -1,1 +1,10 @@
-{}
+{
+    "DropEntityProjectCollection": "true",
+    "downloadTemplate": "true",
+    "runProject": "true",
+    "DropSurveyCollection": "true",
+    "runSurvey": "true",
+    "deleteUserService": "false",
+    "runUser": "false",
+    "runMentoring": "true"
+}

@@ -44,7 +44,7 @@ def drop_collections(env, collections=None):
                 print(f"Collection '{collection_name}' does not exist in database '{database_name}' in the '{env}' environment.")
         
         # Update the success.json file
-        update_success_json(json_file, "dropDb", "success")
+        update_success_json(json_file, "DropEntityProjectCollection", "true")
         # Close the MongoDB connection
         client.close()
 
