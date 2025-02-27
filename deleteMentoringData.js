@@ -1,5 +1,6 @@
 // Import the PostgreSQL client
 const { Client } = require('pg');
+const { updateSuccessJSON } = require('./util');
 require('dotenv').config()
 
 // PostgreSQL connection configuration
@@ -34,6 +35,7 @@ async function clearTables() {
         }
 
         console.log('All specified tables have been cleared.');
+        updateSuccessJSON('success.json','deleteMentoringData','true')
     } catch (error) {
         console.error('An error occurred:', error);
     } finally {

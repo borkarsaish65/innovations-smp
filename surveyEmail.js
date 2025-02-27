@@ -263,6 +263,7 @@ const sendMail = async () => {
     email: await sendEmail(userData, projectData),
   };
 
+  console.log(requestBody,'requestBody')
   let newData = await pushEmailDataToKafka(requestBody);
   console.log(newData, "this is after pushing successfully");
 };

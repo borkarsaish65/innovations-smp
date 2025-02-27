@@ -649,7 +649,7 @@ def FetchMentorId(MentorEMail, accessToken):
             id = responseMentorLisApiApiJSON["result"]["data"][0]["id"]
             return id
     else:
-        terminatingMessage("MEntor List URL Failed")
+        terminatingMessage("Mentor List URL Failed")
 
 
 # Function to upload evidence to cloud
@@ -670,7 +670,7 @@ def FetchMenteeId(MenteeEMail, accessToken):
             id = responseMentorLisApiApiJSON["result"]["data"][0]["id"]
             return id
     else:
-        terminatingMessage("MEntor List URL Failed")
+        terminatingMessage("Mentee List URL Failed")
 
 def createSession(row,accessToken):
     header_create_user = {
@@ -1037,12 +1037,12 @@ def mainFunc(UserFile):
         # DownloadableUrl_path = getPreSignedUrl(accessToken)
         # UpdateUserRole(DownloadableUrl_path,accessToken)
         # createOrginzation(UserFile,accessToken)
-        # userRole = sessionTokenGeneration(programFile)
+        userRole = sessionTokenGeneration(programFile)
         # setOrgPolicies(UserFile,userRole)
-        # sessionsFlow(UserFile,userRole)
-        # CreatingReport(UserFile,userRole)
-        # deleteMentoringFolder()
-        # updateEnvKeyToTrue()
+        sessionsFlow(UserFile,userRole)
+        CreatingReport(UserFile,userRole)
+        deleteMentoringFolder()
+        updateEnvKeyToTrue()
         updateEnvKeyForSessionsTo1()
 
 #main execution

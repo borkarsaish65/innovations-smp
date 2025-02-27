@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 import gdown
 import re
+from json_utils import update_success_json
+json_file = "success.json"
 
 # Load environment variables from .env file
 load_dotenv()
@@ -25,5 +27,6 @@ os.makedirs(output_dir, exist_ok=True)
 try:
     gdown.download_folder(f"https://drive.google.com/drive/folders/{folder_id}", quiet=False, output=output_dir)
     print(f"Folder downloaded successfully to {output_dir}")
+    update_success_json(json_file, "downloadProjectTemplate", "true")
 except Exception as e:
     print(f"An error occurred: {e}")

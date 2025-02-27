@@ -2,7 +2,7 @@
   {
     "name": "Operation 1",
     "script": "./deleteUserService.js",
-    "env": "local"
+    "env": "{{dynamicEnv}}"
   },
   {
     "name": "Operation 2",

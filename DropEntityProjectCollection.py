@@ -3,6 +3,9 @@ import configparser
 from pymongo import MongoClient
 import argparse
 import sys
+from json_utils import update_success_json
+json_file = "success.json"
+
 
 def drop_collections(env, collections=None):
     try:
@@ -39,7 +42,9 @@ def drop_collections(env, collections=None):
                 print(f"Collection '{collection_name}' dropped successfully from database '{database_name}' in the '{env}' environment.")
             else:
                 print(f"Collection '{collection_name}' does not exist in database '{database_name}' in the '{env}' environment.")
-
+        
+        # Update the success.json file
+        update_success_json(json_file, "DropEntityProjectCollection", "true")
         # Close the MongoDB connection
         client.close()
 

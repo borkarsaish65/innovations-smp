@@ -40,6 +40,9 @@ from openpyxl.styles import colors
 from openpyxl.cell import Cell
 import gdown
 import jwt
+from json_utils import update_success_json
+json_file = "success.json"
+
 # get current working directory
 currentDirectory = os.getcwd()
 load_dotenv()
