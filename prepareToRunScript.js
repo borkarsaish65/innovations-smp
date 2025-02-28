@@ -31,3 +31,5 @@ const manageFolders = (folderNames) => {
 
 // Execute folder management
 manageFolders(folders);
+fs.writeFileSync('success.json', '{}', 'utf8'); // Clears the file by writing an empty object
+
