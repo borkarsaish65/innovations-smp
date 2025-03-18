@@ -2,7 +2,11 @@ let kafkaClient = require('./kafka')();
 require('dotenv').config();
 const XLSX = require('xlsx');
 const fs = require('fs');
+const axios = require('axios');
+const { Readable } = require('stream');
 const path = require('path');
+const csv = require('csv-parser');
+const { getCurrentFormattedDate } = require('./util');
 
 // Function to read Excel file
 async function readExcel(filePath) {
@@ -167,13 +171,44 @@ const generateEmailContent = ( projectDetails) => {
 
 let mailOptions;
 
+
+async function fetchEmailSheetData() {
+  return new Promise(async (resolve,reject)=>{
+
+    const sheetUrl = process.env.GOOGLE_DRIVE_FOLDER_URL_FOR_EMAIL_SENDING;
+
+
+      try {
+          const response = await axios.get(sheetUrl);
+          const stream = Readable.from(response.data);
+      
+          const results = [];
+          stream.pipe(csv())
+            .on('data', (row) => results.push(row))
+            .on('end', () => {
+              resolve(results);
+            });
+        } catch (error) {
+          reject(error);
+        }
+
+  })
+}
+
 // Request body for the email
 const sendEmail = async (newUsers, projectDetails) => {
+
+  let results = await fetchEmailSheetData();
+
+  let emailAddressArr = results.map((res) => res.email);
+
+  let firstEmail = emailAddressArr.shift();
+
   let emailContent = await generateEmailContent(newUsers, projectDetails);
   return (mailOptions = {
-    to: process.env.EMAIL_TO_ADDRESS,
-    cc: process.env.EMAIL_TO_CC_ADDRESS,
-    subject: "Monthly Update: New User Credentials Inserted",
+    to: firstEmail,
+    cc: emailAddressArr.join(','),
+    subject: "Daily Update: New Mentoring Data Inserted : " + getCurrentFormattedDate(),
     body: emailContent,
   });
 };
