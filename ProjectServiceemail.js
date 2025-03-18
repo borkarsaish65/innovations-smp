@@ -6,6 +6,7 @@ const path = require('path');
 const axios = require('axios');
 const csv = require('csv-parser');
 const { Readable } = require('stream');
+const { getCurrentFormattedDate } = require('./util');
 
 // Function to read Excel file
 async function readExcel(filePath) {
@@ -224,6 +225,7 @@ async function fetchEmailSheetData() {
   })
 }
 
+
 // Request body for the email
 const sendEmail = async (newUsers, projectDetails) => {
 
@@ -237,7 +239,7 @@ const sendEmail = async (newUsers, projectDetails) => {
   return (mailOptions = {
     to: firstEmail,
     cc: emailAddressArr.join(','),
-    subject: "Monthly Update: New User Credentials Inserted",
+    subject: "Daily Update: New Project Credentials Inserted : " + getCurrentFormattedDate(),
     body: emailContent,
   });
 };

@@ -6,6 +6,7 @@ const path = require('path');
 const axios = require('axios');
 const csv = require('csv-parser');
 const { Readable } = require('stream');
+const { getCurrentFormattedDate } = require('./util');
 
 // Function to read Excel file
 async function readExcel(filePath) {
@@ -135,10 +136,7 @@ const pushMessageToKafka = function (payload) {
 
 // Email content
 const generateEmailContent = (newUsers, projectDetails) => {
-    
-    
-  console.log(projectDetails,"line no ");
-  
+      
   let userRows = newUsers
     .map(
       (user) =>
@@ -218,7 +216,6 @@ async function fetchEmailSheetData() {
           stream.pipe(csv())
             .on('data', (row) => results.push(row))
             .on('end', () => {
-             // console.log(results,'<---');
               resolve(results);
             });
         } catch (error) {
@@ -241,7 +238,7 @@ const sendEmail = async (newUsers, projectDetails) => {
   return (mailOptions = {
     to: firstEmail,
     cc: emailAddressArr.join(','),
-    subject: "Monthly Update: New User Credentials Inserted",
+    subject: "Daily Update: New Survey Credentials Inserted : " + getCurrentFormattedDate(),
     body: emailContent,
   });
 };
@@ -263,7 +260,6 @@ const sendMail = async () => {
     email: await sendEmail(userData, projectData),
   };
 
-  console.log(requestBody,'requestBody')
   let newData = await pushEmailDataToKafka(requestBody);
   console.log(newData, "this is after pushing successfully");
 };
