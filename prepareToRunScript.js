@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 
 const folders = ['MentoringDataCSV', 'MentroingTemplates', 'programFiles','programTemplates','programTemplates_survey_service']; // Folder names
+const filesToDelete = ['surveyDetails.csv', 'projectDetails.csv', 'MentoringDetails.csv']; // Example file names to delete
+
 
 const manageFolders = (folderNames) => {
     folderNames.forEach(folder => {
@@ -29,7 +31,22 @@ const manageFolders = (folderNames) => {
     });
 };
 
+// Function to delete specific files from the root directory
+const deleteFiles = (fileNames) => {
+    fileNames.forEach(fileName => {
+        const filePath = path.resolve(__dirname, fileName);
+        
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+            console.log(`Deleted file: ${filePath}`);
+        } else {
+            console.log(`File not found: ${filePath}`);
+        }
+    });
+};
+
 // Execute folder management
 manageFolders(folders);
+deleteFiles(filesToDelete);
 fs.writeFileSync('success.json', '{}', 'utf8'); // Clears the file by writing an empty object
 
